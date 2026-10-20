@@ -1,0 +1,42 @@
+{
+  "name": "customer-chat-exporter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "合力CRM聊天详情爬虫：带中文桌面界面的会话详情 Excel 导出工具",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suosijieniwo/holly-crm-chat-detail-crawler.git"
+  },
+  "homepage": "https://github.com/suosijieniwo/holly-crm-chat-detail-crawler#readme",
+  "bugs": {
+    "url": "https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/issues"
+  },
+  "main": "desktop/main.mjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "discover": "tsx src/reconnaissance/capture-session.ts",
+    "start": "node dist/src/main.js",
+    "desktop": "npm run build && electron .",
+    "package:portable": "npm run build && node scripts/package-desktop.mjs"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0",
+    "playwright-core": "1.62.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11"
+  }
+}

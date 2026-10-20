@@ -1,0 +1,9 @@
+export const EXPORT_CONCURRENCY = 2;
+export const GLOBAL_REQUEST_INTERVAL_MS = 500;
+export const RETRY_DELAYS_MS = [1000, 2000, 4000] as const;
+export const CHECKPOINT_EVERY_CONVERSATIONS = 20;
+export const MAX_CONSECUTIVE_FAILURES = 5;
+export const MAX_CONSECUTIVE_PARTIALS = 10;
+export const EXCEL_TEXT_CHUNK_SIZE = 32000;
+export const TARGET_ORIGIN = "https://a8.7x24cc.com";
+export const TARGET_HASH = "#/media/chat_record_advanced_query";

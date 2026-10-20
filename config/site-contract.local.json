@@ -1,0 +1,107 @@
+{
+  "origin": "https://a8.7x24cc.com",
+  "page": {
+    "hash": "#/media/chat_record_advanced_query",
+    "requiredTexts": ["查询"],
+    "queryFormSelector": ".all-history-dialog form.el-form",
+    "resultTableSelector": ".all-history-dialog .fresh-table.scroll-table .el-table"
+  },
+  "operations": [
+    {
+      "operation": "conversation-list",
+      "method": "POST",
+      "pathnamePattern": "^/action$",
+      "action": "app.media.queryChatRecord"
+    },
+    {
+      "operation": "message-detail",
+      "method": "POST",
+      "pathnamePattern": "^/action$",
+      "action": "app.media.getSessionRecord"
+    }
+  ],
+  "list": {
+    "operation": "conversation-list",
+    "pagination": {
+      "mode": "page",
+      "requestPagePath": "$.data.page",
+      "requestPageSizePath": "$.data.limit"
+    },
+    "requestFilterPaths": [
+      "$.data.DepAgentId",
+      "$.data.ChannelId",
+      "$.data.CusNickName",
+      "$.data.remarkName",
+      "$.data.FinishStatus",
+      "$.data.satisfactionConfig",
+      "$.data.SkillGroupId",
+      "$.data.Status",
+      "$.data.Type",
+      "$.data.create_begin_time",
+      "$.data.create_end_time",
+      "$.data.finish_begin_time",
+      "$.data.finish_end_time",
+      "$.data.isValidSession",
+      "$.data.sessionTag",
+      "$.data.VisitorId",
+      "$.data.SequenceId",
+      "$.data.warningType",
+      "$.data.sessionType",
+      "$.data.HelpAgentId",
+      "$.data.Tagged",
+      "$.data.sessionPriority",
+      "$.data.serviceSum",
+      "$.data.endOrNot",
+      "$.data.skillGroupOneTimeSolution",
+      "$.data.agentSessionIds",
+      "$.data.evaluationType",
+      "$.data.IsNewMediaSessionLargeData"
+    ],
+    "responseRowsPath": "$.list",
+    "responseTotalPath": "$.count",
+    "fields": {
+      "conversationId": "$.SequenceId",
+      "visitorId": "$.VisitorId",
+      "startedAt": "$.BeginTime",
+      "entry": "$.receive_id",
+      "agent": "$.AgentName",
+      "skillGroup": "$.SkillGroupId",
+      "channel": "$.ChannelId",
+      "status": "$.Status",
+      "satisfaction": "$.Evaluation"
+    }
+  },
+  "messages": {
+    "operation": "message-detail",
+    "pagination": {
+      "mode": "single"
+    },
+    "requestConversationIdPath": "$.data.SequenceID",
+    "responseItemsPath": "$.list",
+    "declaredCountComparable": false,
+    "fields": {
+      "messageId": "$.MsgId",
+      "serverSequence": "$.SerialNumber",
+      "sentAt": "$.CreateTime",
+      "timestamp": "$.Timestamp",
+      "senderMode": "$.Mode",
+      "agentName": "$.AgentName",
+      "visitorName": "$.CusNickName",
+      "robotName": "$.robotName",
+      "messageType": "$.MsgType",
+      "visibleText": "$.Content",
+      "sourceType": "$.SourceType",
+      "channelId": "$.ChannelId"
+    },
+    "supportsCompleteHistory": true
+  },
+  "dom": {
+    "openConversationSelector": "a.show-message",
+    "messageRowSelector": ".popUpBox-modal.details .send, .popUpBox-modal.details .receive",
+    "historyStartSelector": ".popUpBox-modal.details .history-start",
+    "scrollContainerSelector": ".popUpBox-modal.details .chat-content-left",
+    "fields": {
+      "visibleText": ".no-vars, .message-content"
+    }
+  }
+}

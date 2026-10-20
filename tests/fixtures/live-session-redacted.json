@@ -1,0 +1,408 @@
+{
+  "success": true,
+  "list": [
+    {
+      "MsgId": "sample-0",
+      "Mode": "system",
+      "MsgType": "satisfy",
+      "Timestamp": 40,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-1",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 39,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-2",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 38,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-3",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 37,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-4",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 36,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-5",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 35,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-6",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 34,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-7",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 33,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-8",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 32,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-9",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 31,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-10",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 30,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-11",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 29,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-12",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 28,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-13",
+      "Mode": "receive",
+      "MsgType": "image",
+      "Timestamp": 27,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客",
+      "PicUrl": "https://example.com/redacted-image.png"
+    },
+    {
+      "MsgId": "sample-14",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 26,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-15",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 25,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-16",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 24,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-17",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 23,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-18",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 22,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-19",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 21,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-20",
+      "Mode": "receive",
+      "MsgType": "image",
+      "Timestamp": 20,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客",
+      "PicUrl": "https://example.com/redacted-image.png"
+    },
+    {
+      "MsgId": "sample-21",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 19,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-22",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 18,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-23",
+      "Mode": "receive",
+      "MsgType": "image",
+      "Timestamp": 17,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客",
+      "PicUrl": "https://example.com/redacted-image.png"
+    },
+    {
+      "MsgId": "sample-24",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 16,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-25",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 15,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-26",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 14,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-27",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 13,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-28",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 12,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-29",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 11,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-30",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 10,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-31",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 9,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-32",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 8,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-33",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 7,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-34",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 6,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-35",
+      "Mode": "reply",
+      "MsgType": "text",
+      "Timestamp": 5,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "人工坐席",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-36",
+      "Mode": "receive",
+      "MsgType": "text",
+      "Timestamp": 4,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-37",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 3,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-38",
+      "Mode": "system",
+      "MsgType": "text",
+      "Timestamp": 2,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "",
+      "CusNickName": "访客"
+    },
+    {
+      "MsgId": "sample-39",
+      "Mode": "robot",
+      "MsgType": "text",
+      "Timestamp": 1,
+      "Content": "脱敏消息",
+      "robotName": "上下文机器人",
+      "AgentName": "",
+      "CusNickName": "访客"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+# Publish only the project source and explicitly reviewed documentation.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/package.json
+!/package-lock.json
+!/tsconfig.json
+!/vitest.config.ts
+!/electron-builder.yml
+!/启动聊天记录导出工具.bat
+!/清除未完成任务.bat
+!/清除专用登录状态.bat
+!/src/
+!/desktop/
+!/scripts/
+!/tests/
+!/config/
+!/docs/
+!/examples/
+
+# Reviewed site contract only; no local credentials.
+/config/*
+!/config/site-contract.local.json
+
+# Internal plans, captures and local backup references stay private.
+/docs/*
+!/docs/user-guide-zh-CN.md
+!/docs/acceptance-checklist.md
+!/docs/images/
+/docs/images/*
+!/docs/images/desktop.png
+/tests/fixtures/*
+!/tests/fixtures/live-session-redacted.json
+
+# Runtime data and generated builds never enter Git history.
+**/node_modules/
+**/dist/
+**/release/
+**/work/
+**/outputs/
+**/edge-profile/
+/jobs/
+**/discovery/
+**/backups/
+.env
+.env.*
+*.log
+*.har
+*.pem
+*.key
+*.pfx
+*.p12
+*.exe
+*.xlsx
+*.xls
+*.csv
+*.tsv
+
+# The only admitted spreadsheet is generated from fictional source data.
+/examples/*
+!/examples/虚构客服聊天记录示例.xlsx

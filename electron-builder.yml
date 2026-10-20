@@ -1,0 +1,25 @@
+appId: com.customerchatexporter.desktop
+productName: 客服聊天记录导出工具
+executableName: CustomerChatExporter
+directories:
+  output: release
+  buildResources: desktop/assets
+files:
+  - dist/src/**/*.js
+  - desktop/**/*
+  - config/site-contract.local.json
+  - package.json
+asar: true
+electronDist: node_modules/electron/dist
+asarUnpack:
+  - node_modules/playwright-core/**/*
+npmRebuild: false
+compression: normal
+win:
+  icon: desktop/assets/app.ico
+  target:
+    - target: portable
+      arch:
+        - x64
+portable:
+  artifactName: 客服聊天记录导出工具.exe
