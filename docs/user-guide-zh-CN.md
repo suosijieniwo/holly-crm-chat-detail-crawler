@@ -2,7 +2,7 @@
 
 ## 桌面免安装版
 
-从 [GitHub Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 `客服聊天记录导出工具.exe`。需要 Windows x64、Microsoft Edge、可访问后台的网络与有查询权限的账号，不需要安装 Node.js。
+从 [GitHub Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 `Holly-CRM-Chat-Exporter-v1.0.0.exe`，软件界面显示中文名称「客服聊天记录导出工具」。需要 Windows x64、Microsoft Edge、可访问后台的网络与有查询权限的账号，不需要安装 Node.js。
 
 1. 双击 exe，点击“打开后台”。
 2. 在专用 Edge 中登录，设置筛选条件并点击网页原有的“查询”。

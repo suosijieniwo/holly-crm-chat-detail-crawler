@@ -20,7 +20,7 @@
 
 ## 直接使用 exe
 
-从 [Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 `客服聊天记录导出工具.exe`，双击即可。
+从 [Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 `Holly-CRM-Chat-Exporter-v1.0.0.exe`，双击即可。软件界面仍显示中文名称「客服聊天记录导出工具」。
 
 | 项目 | 要求 |
 | --- | --- |
