@@ -56,6 +56,36 @@ describe("desktop controller", () => {
     expect(s.runtime.export).not.toHaveBeenCalled();
   });
 
+  it("尚未选择保存目录时不开始采集，选好后使用新目录", async () => {
+    const s = setup();
+    s.runtime.outputDir = "";
+    await s.controller.openBrowser();
+    s.hooks().query(query);
+    await expect(s.controller.startExport()).rejects.toThrow(/保存位置/);
+    expect(s.runtime.export).not.toHaveBeenCalled();
+    s.controller.setOutputDirectory("D:\\导出文件");
+    expect(s.controller.getState().outputDir).toBe("D:\\导出文件");
+    expect(s.runtime.outputDir).toBe("D:\\导出文件");
+    await s.controller.startExport();
+    expect(s.controller.getState().task).toBe("completed");
+  });
+
+  it("任务执行时不能更换目录；更换后不再把旧文件当作新目录的结果", async () => {
+    const s = setup();
+    await s.controller.openBrowser();
+    s.hooks().query(query);
+    const gate = deferred<void>();
+    vi.mocked(s.runtime.validateQuery).mockImplementationOnce(() => gate.promise);
+    const task = s.controller.startExport();
+    expect(() => s.controller.setOutputDirectory("D:\\导出文件")).toThrow(/等待|停止/);
+    expect(s.runtime.outputDir).toContain("Desktop");
+    gate.resolve();
+    await task;
+    expect(s.controller.getState().output).toBeDefined();
+    s.controller.setOutputDirectory("D:\\导出文件");
+    expect(s.controller.getState().output).toBeUndefined();
+  });
+
   it("并发开始只执行一次，接收真实进度并允许完成后再次导出", async () => {
     const s = setup();
     await s.controller.openBrowser();

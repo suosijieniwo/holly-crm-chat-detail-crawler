@@ -8,13 +8,13 @@ let browser: Browser;
 async function openUI(): Promise<Page> {
   const page = await browser.newPage({ viewport: { width: 1120, height: 760 } });
   await page.addInitScript(() => {
-    const state = { browser: "closed", task: "idle", message: "先打开后台，在专用 Edge 中登录并查询。", queryReady: false, querySummary: "尚未识别查询，请先在后台点击“查询”。", outputDir: "C:\\Users\\tester\\Desktop\\客服聊天记录导出" };
+    const state = { browser: "closed", task: "idle", message: "先打开后台，在专用 Edge 中登录并查询。", queryReady: false, querySummary: "尚未识别查询，请先在后台点击“查询”。", outputDir: "" };
     const target = window as any;
     target.__calls = [];
     target.exporter = {
       getState: async () => ({ ok: true, value: state }),
       onState: (handler: any) => { target.__update = handler; },
-      ...Object.fromEntries(["openBrowser", "startExport", "stopExport", "openOutputFolder", "openLatestFile", "clearJobs", "clearLogin"].map(name => [name, async () => {
+      ...Object.fromEntries(["openBrowser", "startExport", "stopExport", "selectOutputDirectory", "openOutputFolder", "openLatestFile", "clearJobs", "clearLogin"].map(name => [name, async () => {
         target.__calls.push(name);
         return name === "clearJobs" ? { ok: false, error: "请先停止任务" } : { ok: true, value: true };
       }]))
@@ -22,7 +22,7 @@ async function openUI(): Promise<Page> {
     target.__state = state;
   });
   await page.goto(pathToFileURL(path.resolve("desktop/index.html")).href);
-  await page.waitForFunction(() => document.querySelector("#output-dir")?.textContent?.includes("tester"));
+  await page.waitForFunction(() => typeof (window as any).__update === "function");
   return page;
 }
 beforeAll(async () => {
@@ -31,6 +31,26 @@ beforeAll(async () => {
 afterAll(async () => { await browser?.close(); }, 30000);
 
 describe("desktop UI", () => {
+  it("首次提示选择位置；选择后保留两个打开按钮并可更换，导出时锁定更换", async () => {
+    const page = await openUI();
+    expect(await page.locator("#output-dir").textContent()).toContain("首次");
+    expect(await page.locator("#select-output").isVisible()).toBe(true);
+    expect(await page.locator("#open-file").isVisible()).toBe(false);
+    expect(await page.locator("#open-folder").isVisible()).toBe(false);
+    await page.locator("#select-output").click();
+    expect(await page.evaluate(() => (window as any).__calls)).toContain("selectOutputDirectory");
+    expect(await page.locator("#select-output").isVisible()).toBe(true);
+    await page.evaluate(() => (window as any).__update({ ...(window as any).__state, outputDir: "D:\\导出文件", task: "completed", output: "D:\\导出文件\\result.xlsx" }));
+    expect(await page.locator("#select-output").isVisible()).toBe(false);
+    expect(await page.locator("#change-output").isVisible()).toBe(true);
+    expect(await page.locator("#open-file").isEnabled()).toBe(true);
+    expect(await page.locator("#open-folder").isVisible()).toBe(true);
+    await page.locator("#change-output").click();
+    expect(await page.evaluate(() => (window as any).__calls.filter((name: string) => name === "selectOutputDirectory").length)).toBe(2);
+    await page.evaluate(() => (window as any).__update({ ...(window as any).__state, outputDir: "D:\\导出文件", task: "running" }));
+    expect(await page.locator("#change-output").isDisabled()).toBe(true);
+    await page.close();
+  });
   it("默认空状态不显示虚构数据，必须识别查询后才允许开始", async () => {
     const page = await openUI();
     expect(await page.locator("#start-export").isDisabled()).toBe(true);

@@ -28,11 +28,12 @@ export function createDesktopRuntime(contractPath: string, paths: AppPaths): Des
 
   const disposeObserver = (): void => { observer?.stop(); observer = undefined; };
   return {
-    outputDir: paths.outputDir,
+    get outputDir() { return paths.outputDir; },
+    set outputDir(directory: string) { paths.outputDir = directory; },
     async openBrowser(hooks: BrowserHooks) {
       if (closingBrowser) await closingBrowser;
       if (context && page && !page.isClosed()) { await page.bringToFront(); return; }
-      await Promise.all([paths.appRoot, paths.profileDir, paths.jobsDir, paths.outputDir].map(folder => mkdir(folder, { recursive: true })));
+      await Promise.all([paths.appRoot, paths.profileDir, paths.jobsDir].map(folder => mkdir(folder, { recursive: true })));
       let opened: BrowserContext;
       try { opened = await launchDedicatedEdge(paths); }
       catch (error) {
@@ -87,12 +88,15 @@ export function createDesktopRuntime(contractPath: string, paths: AppPaths): Des
     },
     async export(template, signal, progress) {
       if (!page || page.isClosed()) throw new Error("专用浏览器已关闭");
+      const outputDir = paths.outputDir;
+      if (!outputDir) throw new Error("请先选择 Excel 保存位置。");
+      await mkdir(outputDir, { recursive: true });
       const executor = new PlaywrightActionExecutor(page as unknown as ActionPage, new ReadonlyRequestPolicy(contract), (actionId, operation) => { if (operation === "conversation-list") toolRequestIds.add(actionId); });
       const collected = await new ListCollector(contract, executor).collect(template, undefined, signal);
       if (collected.conversations.length === 0) throw new Error("当前筛选结果没有可导出的会话，请调整条件并重新查询。");
       const store = new FileJobStore(paths.jobsDir);
       const job = new ExportJob(new ApiMessageCollector(contract, executor, template), store, new GlobalStartRateLimiter(GLOBAL_REQUEST_INTERVAL_MS));
-      const result = await runExportFlow(collected, store, job, new WorkbookWriter(paths.outputDir), progress, signal);
+      const result = await runExportFlow(collected, store, job, new WorkbookWriter(outputDir), progress, signal);
       const values = Object.values(result.checkpoint.results);
       progress({ total: result.checkpoint.conversations.length, completed: values.length,
         success: values.filter(item => item.status === "success").length,

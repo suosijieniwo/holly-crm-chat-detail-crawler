@@ -56,6 +56,12 @@ export class DesktopController {
 
   getState(): DesktopState { return structuredClone(this.state); }
 
+  setOutputDirectory(directory: string): void {
+    if (this.closing || this.active || this.opening) throw new Error("请先停止任务并等待收尾完成，再更换保存位置。");
+    this.runtime.outputDir = directory;
+    this.update({ outputDir: directory, output: undefined });
+  }
+
   private update(value: Partial<DesktopState>): void {
     Object.assign(this.state, value);
     this.onState(this.getState());
@@ -100,6 +106,7 @@ export class DesktopController {
     if (this.closing || this.active) throw new Error("任务正在运行或关闭，请等待完成。");
     if (this.state.browser !== "open" || !this.latest) throw new Error("请先打开浏览器，设置条件并点击后台“查询”。");
     if (!hasMeaningfulFilter(this.latest.data)) throw new Error("至少设置一个日期、渠道、标签或用户等筛选条件。");
+    if (!this.runtime.outputDir) throw new Error("请先选择 Excel 保存位置。");
     const template = structuredClone(this.latest);
     this.cancellation = new AbortController();
     this.saveFailed = false;

@@ -29,8 +29,15 @@ function render(state) {
   track.setAttribute("aria-valuenow", String(ratio));
   byId("progress-fill").style.width = `${ratio}%`;
   byId("progress-fraction").textContent = progress ? `${progress.completed.toLocaleString("zh-CN")} / ${progress.total.toLocaleString("zh-CN")} 条会话` : running ? "正在确认会话总量…" : "尚无任务";
-  byId("output-dir").textContent = state.outputDir;
+  const hasDirectory = Boolean(state.outputDir);
+  byId("output-dir").textContent = state.outputDir || "首次导出时选择保存位置，之后自动沿用。";
   byId("output-dir").title = state.outputDir;
+  byId("select-output").hidden = hasDirectory;
+  byId("select-output").disabled = running || opening;
+  byId("change-output").hidden = !hasDirectory;
+  byId("change-output").disabled = running || opening;
+  byId("open-file").hidden = !hasDirectory;
+  byId("open-folder").hidden = !hasDirectory;
   byId("open-file").disabled = !state.output;
   byId("result-label").textContent = state.output ? "本次导出文件" : "Excel 保存位置";
   byId("result-path").hidden = !state.output;
@@ -48,7 +55,7 @@ async function act(name, feedback = "action-feedback") {
     byId(feedback).textContent = error instanceof Error ? error.message : String(error);
   }
 }
-for (const [id, action] of Object.entries({ "open-browser": "openBrowser", "start-export": "startExport", "stop-export": "stopExport", "open-folder": "openOutputFolder", "open-file": "openLatestFile" })) byId(id).addEventListener("click", () => { void act(action); });
+for (const [id, action] of Object.entries({ "open-browser": "openBrowser", "start-export": "startExport", "stop-export": "stopExport", "select-output": "selectOutputDirectory", "change-output": "selectOutputDirectory", "open-folder": "openOutputFolder", "open-file": "openLatestFile" })) byId(id).addEventListener("click", () => { void act(action); });
 for (const [id, action] of Object.entries({ "clear-jobs": "clearJobs", "clear-login": "clearLogin" })) byId(id).addEventListener("click", () => { void act(action, "settings-feedback"); });
 byId("settings-button").addEventListener("click", () => { byId("settings-feedback").textContent = ""; byId("settings-dialog").showModal(); });
 byId("close-settings").addEventListener("click", () => byId("settings-dialog").close());

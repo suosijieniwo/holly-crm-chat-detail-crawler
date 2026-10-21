@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require("electron");
-const names = ["getState", "openBrowser", "startExport", "stopExport", "openOutputFolder", "openLatestFile", "clearJobs", "clearLogin"];
+const names = ["getState", "openBrowser", "startExport", "stopExport", "selectOutputDirectory", "openOutputFolder", "openLatestFile", "clearJobs", "clearLogin"];
 contextBridge.exposeInMainWorld("exporter", {
   ...Object.fromEntries(names.map(name => [name, () => ipcRenderer.invoke(`exporter:${name}`)])),
   onState(handler) {

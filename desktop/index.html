@@ -28,11 +28,11 @@
           <div class="export-actions"><button class="button primary" id="start-export" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"/></svg>开始导出</button><button class="button quiet" id="stop-export" disabled>停止并保留进度</button></div>
           <p class="action-feedback" id="action-feedback" role="alert"></p>
         </section>
-        <section class="result-section" aria-label="导出文件"><div class="file-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12l5 5m0-5-5 5"/></svg></div><div class="file-description"><h3 id="result-label">Excel 保存位置</h3><p id="output-dir">正在读取…</p><p id="result-path" hidden></p></div><div class="file-actions"><button class="text-button" id="open-file" disabled>打开 Excel</button><button class="text-button" id="open-folder">打开文件夹</button></div></section>
+        <section class="result-section" aria-label="导出文件"><div class="file-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12l5 5m0-5-5 5"/></svg></div><div class="file-description"><div class="file-heading"><h3 id="result-label">Excel 保存位置</h3><button class="text-button" id="change-output" hidden>更换</button></div><p id="output-dir">正在读取…</p><p id="result-path" hidden></p></div><div class="file-actions"><button class="button secondary" id="select-output">选择保存位置</button><button class="text-button" id="open-file" hidden disabled>打开 Excel</button><button class="text-button" id="open-folder" hidden>打开文件夹</button></div></section>
       </section>
       <aside class="guide" aria-label="使用指引">
-        <div class="guide-title"><span class="tiny-line"></span><h2>三步完成导出</h2></div>
-        <ol><li><span class="step-number">1</span><div><h3>登录并查询</h3><p>打开后台，在 Edge 中设置日期、渠道或标签，再点击“查询”。</p></div></li><li><span class="step-number">2</span><div><h3>回到这里开始</h3><p>确认当前查询，点击“开始导出”。导出期间保持后台开启。</p></div></li><li><span class="step-number">3</span><div><h3>查看 Excel</h3><p>会话汇总与消息明细，保存在同一份表格里。</p></div></li></ol>
+        <div class="guide-title"><h2>三步完成导出</h2></div>
+        <ol><li><span class="step-number">1</span><div><h3>登录并查询</h3><p>打开后台，在 Edge 中设置日期、渠道或标签，再点击“查询”。</p></div></li><li><span class="step-number">2</span><div><h3>回到这里开始</h3><p>确认当前查询，点击“开始导出”。首次导出时选择保存位置。</p></div></li><li><span class="step-number">3</span><div><h3>查看 Excel</h3><p>会话汇总与消息明细，保存在同一份表格里。可打开 Excel 或所在文件夹。</p></div></li></ol>
         <div class="resume-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2 7m-2-7V5m0 6h6m3-4v6l4 2"/></svg><h3>中断了，也能继续</h3><p>已完成进度保存在本机。下次使用相同筛选，自动重试未完成会话。</p></div>
       </aside>
     </main>

@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DesktopController } from "../dist/src/desktop/controller.js";
 import { createDesktopRuntime } from "../dist/src/desktop/runtime.js";
+import { loadOutputDirectory, saveOutputDirectory } from "../dist/src/desktop/output-directory.js";
 import { resolveAppPaths } from "../dist/src/config/paths.js";
 import { clearDedicatedLogin, clearUnfinishedJobs } from "../dist/src/cleanup/local-cleanup.js";
 
@@ -30,8 +31,8 @@ else {
 
 async function start() {
   const paths = resolveAppPaths();
-  // 桌面可能被 OneDrive 或组织策略重定向，桌面版使用 Windows 实际桌面位置。
-  paths.outputDir = path.join(app.getPath("desktop"), "客服聊天记录导出");
+  const settingsFile = path.join(paths.appRoot, "desktop-settings.json");
+  paths.outputDir = await loadOutputDirectory(settingsFile);
   const runtime = createDesktopRuntime(path.join(app.getAppPath(), "config", "site-contract.local.json"), paths);
   controller = new DesktopController(runtime, state => {
     if (window && !window.isDestroyed()) window.webContents.send("exporter:state", state);
@@ -57,6 +58,21 @@ async function start() {
     if (maintenance || closing || state.task === "running" || state.task === "stopping" || state.browser === "opening" || state.browser === "closing") throw new Error("请先停止任务并等待收尾完成。");
   };
   const confirm = async message => (await dialog.showMessageBox(window, { type: "warning", title: "确认清除", message, buttons: ["取消", "确认清除"], defaultId: 0, cancelId: 0, noLink: true })).response === 1;
+  const chooseOutputDirectory = async () => {
+    idle();
+    maintenance = true;
+    try {
+      const result = await dialog.showOpenDialog(window, {
+        title: "选择 Excel 保存位置", buttonLabel: "保存到此文件夹",
+        defaultPath: paths.outputDir || app.getPath("desktop"), properties: ["openDirectory", "createDirectory"]
+      });
+      const directory = result.filePaths[0];
+      if (result.canceled || !directory) return false;
+      await saveOutputDirectory(settingsFile, directory);
+      controller.setOutputDirectory(directory);
+      return true;
+    } finally { maintenance = false; }
+  };
   const clean = async kind => {
     idle();
     if (kind === "login" && controller.getState().browser !== "closed") throw new Error("请先关闭工具的专用 Edge，再清除登录状态。");
@@ -69,9 +85,19 @@ async function start() {
   };
   handle("getState", () => controller.getState());
   handle("openBrowser", () => { if (maintenance || closing) throw new Error("工具正在清理或关闭，请稍候。"); return controller.openBrowser(); });
-  handle("startExport", () => { if (maintenance || closing) throw new Error("工具正在清理或关闭，请稍候。"); return controller.startExport(); });
+  handle("startExport", async () => {
+    if (maintenance || closing) throw new Error("工具正在处理其他操作，请稍候。");
+    if (!paths.outputDir && !await chooseOutputDirectory()) return false;
+    return controller.startExport();
+  });
   handle("stopExport", () => controller.stopExport());
-  handle("openOutputFolder", async () => { await mkdir(paths.outputDir, { recursive: true }); const error = await shell.openPath(paths.outputDir); if (error) throw new Error(error); });
+  handle("selectOutputDirectory", chooseOutputDirectory);
+  handle("openOutputFolder", async () => {
+    if (!paths.outputDir) throw new Error("请先选择 Excel 保存位置。");
+    await mkdir(paths.outputDir, { recursive: true });
+    const error = await shell.openPath(paths.outputDir);
+    if (error) throw new Error(error);
+  });
   handle("openLatestFile", async () => {
     const file = controller.getState().output;
     if (!file) throw new Error("尚未生成 Excel。");

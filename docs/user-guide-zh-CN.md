@@ -2,12 +2,12 @@
 
 ## 桌面免安装版
 
-从 [GitHub Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 `Holly-CRM-Chat-Exporter-v1.0.0.exe`，软件界面显示中文名称「客服聊天记录导出工具」。需要 Windows x64、Microsoft Edge、可访问后台的网络与有查询权限的账号，不需要安装 Node.js。
+从 [GitHub Releases](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/latest) 下载 Windows 免安装 exe，软件界面显示中文名称「客服聊天记录导出工具」。需要 Windows x64、Microsoft Edge、可访问后台的网络与有查询权限的账号，不需要安装 Node.js。
 
 1. 双击 exe，点击“打开后台”。
 2. 在专用 Edge 中登录，设置筛选条件并点击网页原有的“查询”。
-3. 回到桌面窗口，确认当前查询后点击“开始导出”。
-4. 完成后点击“打开 Excel”或“打开文件夹”。桌面版使用 Windows 实际桌面下的 `客服聊天记录导出` 文件夹。
+3. 回到桌面窗口，确认当前查询后点击“开始导出”。首次导出时选择保存文件夹，取消选择不会启动采集。也可以先在底部点击“选择保存位置”。
+4. 选好位置后底部保留“打开 Excel”和“打开文件夹”，完成后可直接打开结果。保存位置会自动记住，重启后继续沿用；空闲时点击路径旁的“更换”选择新文件夹。更换不会移动或删除旧文件，新的 Excel 会在下次导出完成后显示。
 5. 点击“停止并保留进度”会等待在途操作收尾，同一窗口可以继续下一次导出。
 
 ## 源码批处理入口
@@ -48,9 +48,13 @@ Excel 生成不代表每段会话完整：请查看“导出状态”。存在�
 
 - 专用登录状态：`%LOCALAPPDATA%\CustomerChatExporter\edge-profile`
 - 未完成任务：`%LOCALAPPDATA%\CustomerChatExporter\jobs`
-- 最终 Excel：桌面 `客服聊天记录导出`
+- 桌面版最终 Excel：首次选择或后续更换的保存文件夹
+- 保存位置设置：`%LOCALAPPDATA%\CustomerChatExporter\desktop-settings.json`
+- 批处理入口最终 Excel：桌面 `客服聊天记录导出`
 
 最终 Excel 和未完成任务可能包含聊天内容，请按公司数据规范保管，不要上传到非授权位置。
+
+保存位置不能设为 `%LOCALAPPDATA%\CustomerChatExporter` 或其子文件夹，避免清理运行数据时误删 Excel。
 
 ## 清理本机数据
 
