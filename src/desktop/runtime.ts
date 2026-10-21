@@ -86,7 +86,7 @@ export function createDesktopRuntime(contractPath: string, paths: AppPaths): Des
       if (!page || page.isClosed()) throw new Error("专用浏览器已关闭，请重新打开后台。");
       await assertTargetPage(page, contract);
     },
-    async export(template, signal, progress) {
+    async export(template, senderSelection, signal, progress) {
       if (!page || page.isClosed()) throw new Error("专用浏览器已关闭");
       const outputDir = paths.outputDir;
       if (!outputDir) throw new Error("请先选择 Excel 保存位置。");
@@ -96,7 +96,8 @@ export function createDesktopRuntime(contractPath: string, paths: AppPaths): Des
       if (collected.conversations.length === 0) throw new Error("当前筛选结果没有可导出的会话，请调整条件并重新查询。");
       const store = new FileJobStore(paths.jobsDir);
       const job = new ExportJob(new ApiMessageCollector(contract, executor, template), store, new GlobalStartRateLimiter(GLOBAL_REQUEST_INTERVAL_MS));
-      const result = await runExportFlow(collected, store, job, new WorkbookWriter(outputDir), progress, signal);
+      const writer = new WorkbookWriter(outputDir);
+      const result = await runExportFlow(collected, store, job, { writeAndFinalize: checkpoint => writer.writeAndFinalize(checkpoint, senderSelection) }, progress, signal);
       const values = Object.values(result.checkpoint.results);
       progress({ total: result.checkpoint.conversations.length, completed: values.length,
         success: values.filter(item => item.status === "success").length,

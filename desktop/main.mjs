@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DesktopController } from "../dist/src/desktop/controller.js";
 import { createDesktopRuntime } from "../dist/src/desktop/runtime.js";
-import { loadOutputDirectory, saveOutputDirectory } from "../dist/src/desktop/output-directory.js";
+import { loadExportSenderSelection, loadOutputDirectory, saveExportSenderSelection, saveOutputDirectory } from "../dist/src/desktop/output-directory.js";
 import { resolveAppPaths } from "../dist/src/config/paths.js";
 import { clearDedicatedLogin, clearUnfinishedJobs } from "../dist/src/cleanup/local-cleanup.js";
 
@@ -33,10 +33,11 @@ async function start() {
   const paths = resolveAppPaths();
   const settingsFile = path.join(paths.appRoot, "desktop-settings.json");
   paths.outputDir = await loadOutputDirectory(settingsFile);
+  const senderSelection = await loadExportSenderSelection(settingsFile);
   const runtime = createDesktopRuntime(path.join(app.getAppPath(), "config", "site-contract.local.json"), paths);
   controller = new DesktopController(runtime, state => {
     if (window && !window.isDestroyed()) window.webContents.send("exporter:state", state);
-  });
+  }, senderSelection);
   window = new BrowserWindow({
     width: 1120, height: 790, minWidth: 820, minHeight: 640,
     title: "客服聊天记录导出工具", backgroundColor: "#f2f6f5", show: false,
@@ -48,9 +49,9 @@ async function start() {
   window.webContents.on("will-navigate", event => event.preventDefault());
   window.webContents.session.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
 
-  const handle = (name, action) => ipcMain.handle(`exporter:${name}`, async event => {
+  const handle = (name, action) => ipcMain.handle(`exporter:${name}`, async (event, ...args) => {
     if (event.sender !== window.webContents) return { ok: false, error: "无效窗口" };
-    try { return { ok: true, value: await action() }; }
+    try { return { ok: true, value: await action(...args) }; }
     catch (error) { return { ok: false, error: error instanceof Error ? error.message : String(error) }; }
   });
   const idle = () => {
@@ -92,6 +93,15 @@ async function start() {
   });
   handle("stopExport", () => controller.stopExport());
   handle("selectOutputDirectory", chooseOutputDirectory);
+  handle("setSenderSelection", async selection => {
+    idle();
+    maintenance = true;
+    try {
+      await saveExportSenderSelection(settingsFile, selection);
+      controller.setSenderSelection(selection);
+      return true;
+    } finally { maintenance = false; }
+  });
   handle("openOutputFolder", async () => {
     if (!paths.outputDir) throw new Error("请先选择 Excel 保存位置。");
     await mkdir(paths.outputDir, { recursive: true });

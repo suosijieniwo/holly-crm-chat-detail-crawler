@@ -1,6 +1,7 @@
 import type { ActionRequestTemplate } from "../browser/action-request.js";
 import { hasMeaningfulFilter } from "../browser/page-guard.js";
 import type { ExportProgress } from "../jobs/export-job.js";
+import { DEFAULT_EXPORT_SENDER_SELECTION, requireExportSenderSelection, type ExportSenderType } from "../domain/export-senders.js";
 
 export interface BrowserHooks {
   query(template: ActionRequestTemplate | undefined): void;
@@ -12,7 +13,7 @@ export interface DesktopRuntime {
   outputDir: string;
   openBrowser(hooks: BrowserHooks): Promise<void>;
   validateQuery(): Promise<void>;
-  export(template: ActionRequestTemplate, signal: AbortSignal, progress: (value: ExportProgress) => void): Promise<{ output: string; complete: boolean }>;
+  export(template: ActionRequestTemplate, senderSelection: readonly ExportSenderType[], signal: AbortSignal, progress: (value: ExportProgress) => void): Promise<{ output: string; complete: boolean }>;
   closeBrowser(): Promise<void>;
 }
 
@@ -24,6 +25,7 @@ export interface DesktopState {
   querySummary: string;
   progress?: Omit<ExportProgress, "currentConversationId">;
   outputDir: string;
+  senderSelection: ExportSenderType[];
   output?: string;
   complete?: boolean;
   saveFailed?: boolean;
@@ -47,10 +49,11 @@ export class DesktopController {
   private closing = false;
   private saveFailed = false;
 
-  constructor(private readonly runtime: DesktopRuntime, private readonly onState: (state: DesktopState) => void = () => {}) {
+  constructor(private readonly runtime: DesktopRuntime, private readonly onState: (state: DesktopState) => void = () => {}, senderSelection: readonly ExportSenderType[] = DEFAULT_EXPORT_SENDER_SELECTION) {
     this.state = {
       browser: "closed", task: "idle", message: "先打开后台，在专用 Edge 中登录并查询。",
-      queryReady: false, querySummary: summarize(), outputDir: runtime.outputDir
+      queryReady: false, querySummary: summarize(), outputDir: runtime.outputDir,
+      senderSelection: requireExportSenderSelection(senderSelection)
     };
   }
 
@@ -60,6 +63,11 @@ export class DesktopController {
     if (this.closing || this.active || this.opening) throw new Error("请先停止任务并等待收尾完成，再更换保存位置。");
     this.runtime.outputDir = directory;
     this.update({ outputDir: directory, output: undefined });
+  }
+
+  setSenderSelection(selection: unknown): void {
+    if (this.closing || this.active || this.opening) throw new Error("请先停止任务并等待收尾完成，再更改导出内容。");
+    this.update({ senderSelection: requireExportSenderSelection(selection) });
   }
 
   private update(value: Partial<DesktopState>): void {
@@ -108,10 +116,11 @@ export class DesktopController {
     if (!hasMeaningfulFilter(this.latest.data)) throw new Error("至少设置一个日期、渠道、标签或用户等筛选条件。");
     if (!this.runtime.outputDir) throw new Error("请先选择 Excel 保存位置。");
     const template = structuredClone(this.latest);
+    const senderSelection = [...this.state.senderSelection];
     this.cancellation = new AbortController();
     this.saveFailed = false;
     this.update({ task: "running", message: "正在检查查询并固定会话列表…", progress: undefined, complete: undefined, output: undefined, saveFailed: false, querySummary: summarize(template) });
-    this.active = this.execute(template, this.cancellation.signal);
+    this.active = this.execute(template, senderSelection, this.cancellation.signal);
     try { await this.active; }
     finally {
       this.active = undefined;
@@ -120,11 +129,11 @@ export class DesktopController {
     }
   }
 
-  private async execute(template: ActionRequestTemplate, signal: AbortSignal): Promise<void> {
+  private async execute(template: ActionRequestTemplate, senderSelection: readonly ExportSenderType[], signal: AbortSignal): Promise<void> {
     try {
       await this.runtime.validateQuery();
       signal.throwIfAborted();
-      const result = await this.runtime.export(template, signal, value => {
+      const result = await this.runtime.export(template, senderSelection, signal, value => {
         const { total, completed, success, partial, failed } = value;
         this.update({ progress: { total, completed, success, partial, failed }, ...(signal.aborted ? {} : { message: "正在采集会话，完成后自动生成 Excel。" }) });
       });

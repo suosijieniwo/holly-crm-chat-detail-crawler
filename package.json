@@ -1,6 +1,6 @@
 {
   "name": "customer-chat-exporter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "description": "合力CRM聊天详情爬虫：带中文桌面界面的会话详情 Excel 导出工具",

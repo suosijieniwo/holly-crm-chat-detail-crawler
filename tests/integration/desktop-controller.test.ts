@@ -17,7 +17,7 @@ function setup() {
     outputDir: "C:\\Users\\tester\\Desktop\\客服聊天记录导出",
     openBrowser: vi.fn(async value => { hooks = value; }),
     validateQuery: vi.fn(async () => {}),
-    export: vi.fn(async (_template, _signal, progress) => {
+    export: vi.fn(async (_template, _selection, _signal, progress) => {
       progress({ total: 2, completed: 2, success: 1, partial: 1, failed: 0 });
       return { output: "C:\\output\\result.xlsx", complete: false };
     }),
@@ -70,6 +70,16 @@ describe("desktop controller", () => {
     expect(s.controller.getState().task).toBe("completed");
   });
 
+  it("导出时使用用户当前选择的发送方", async () => {
+    const s = setup();
+    await s.controller.openBrowser();
+    s.hooks().query(query);
+    expect(s.controller.getState().senderSelection).toEqual(["visitor", "agent"]);
+    s.controller.setSenderSelection(["bot"]);
+    await s.controller.startExport();
+    expect(s.runtime.export).toHaveBeenCalledWith(query, ["bot"], expect.any(AbortSignal), expect.any(Function));
+  });
+
   it("任务执行时不能更换目录；更换后不再把旧文件当作新目录的结果", async () => {
     const s = setup();
     await s.controller.openBrowser();
@@ -108,7 +118,7 @@ describe("desktop controller", () => {
     s.hooks().query(query);
     const saved = deferred<void>();
     let signal!: AbortSignal;
-    vi.mocked(s.runtime.export).mockImplementationOnce(async (_template, value) => {
+    vi.mocked(s.runtime.export).mockImplementationOnce(async (_template, _selection, value) => {
       signal = value;
       await saved.promise;
       signal.throwIfAborted();
@@ -126,7 +136,7 @@ describe("desktop controller", () => {
     await Promise.all([first, stop]);
     expect(s.controller.getState().task).toBe("cancelled");
     await s.controller.startExport();
-    const nextSignal = vi.mocked(s.runtime.export).mock.calls[1]![1];
+    const nextSignal = vi.mocked(s.runtime.export).mock.calls[1]![2];
     expect(nextSignal.aborted).toBe(false);
   });
 

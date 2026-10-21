@@ -17,7 +17,8 @@ async function openUI(): Promise<Page> {
       ...Object.fromEntries(["openBrowser", "startExport", "stopExport", "selectOutputDirectory", "openOutputFolder", "openLatestFile", "clearJobs", "clearLogin"].map(name => [name, async () => {
         target.__calls.push(name);
         return name === "clearJobs" ? { ok: false, error: "请先停止任务" } : { ok: true, value: true };
-      }]))
+      }])),
+      setSenderSelection: async (selection: string[]) => { target.__calls.push({ name: "setSenderSelection", selection }); return { ok: true, value: true }; }
     };
     target.__state = state;
   });
@@ -59,6 +60,29 @@ describe("desktop UI", () => {
     expect(await page.evaluate(() => (window as any).__calls)).toContain("openBrowser");
     await page.evaluate(() => (window as any).__update({ ...(window as any).__state, browser: "open", queryReady: true, querySummary: "2026-10-19" }));
     expect(await page.locator("#start-export").isEnabled()).toBe(true);
+    await page.close();
+  });
+  it("显示用户、客服、机器人选择，默认只勾选用户和客服", async () => {
+    const page = await openUI();
+    expect(await page.locator("#sender-visitor").isChecked()).toBe(true);
+    expect(await page.locator("#sender-agent").isChecked()).toBe(true);
+    expect(await page.locator("#sender-bot").isChecked()).toBe(false);
+    await page.locator("#sender-bot").check();
+    await page.waitForFunction(() => (window as any).__calls.some((item: any) => item.name === "setSenderSelection" && item.selection.join(",") === "visitor,agent,bot"));
+    await page.evaluate(() => (window as any).__update({ ...(window as any).__state, senderSelection: ["bot"] }));
+    expect(await page.locator("#sender-visitor").isChecked()).toBe(false);
+    expect(await page.locator("#sender-agent").isChecked()).toBe(false);
+    expect(await page.locator("#sender-bot").isChecked()).toBe(true);
+    await page.close();
+  });
+  it("至少保留一种导出内容，任务运行时锁定角色选择", async () => {
+    const page = await openUI();
+    await page.locator("#sender-visitor").click();
+    await page.locator("#sender-agent").click();
+    expect(await page.locator("#sender-agent").isChecked()).toBe(true);
+    expect(await page.locator("#action-feedback").textContent()).toContain("至少选择");
+    await page.evaluate(() => (window as any).__update({ ...(window as any).__state, task: "running" }));
+    expect(await page.locator("#sender-bot").isDisabled()).toBe(true);
     await page.close();
   });
   it("真实状态驱动进度、停止和再次开始；未完整结果不冒充完整成功", async () => {

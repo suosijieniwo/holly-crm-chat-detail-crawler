@@ -18,7 +18,7 @@
       <section class="workspace" aria-label="导出工作区">
         <section class="connection-section">
           <div class="section-heading"><div><h2>连接客服后台</h2><p id="browser-hint">在专用 Edge 中登录，设置条件并查询。</p></div><button class="button secondary" id="open-browser"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="3"/><path d="M3 9h18m-13 5h5m-2-2 2 2-2 2"/></svg><span>打开后台</span></button></div>
-          <div class="query-block"><span class="field-label">当前查询</span><p id="query-summary">尚未识别查询，请先在后台点击“查询”。</p><span class="scope"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>只导出访客和人工客服</span></div>
+          <div class="query-block"><span class="field-label">当前查询</span><p id="query-summary">尚未识别查询，请先在后台点击“查询”。</p><div class="sender-selection" role="group" aria-labelledby="sender-label"><span class="field-label" id="sender-label">导出内容</span><label><input id="sender-visitor" type="checkbox" value="visitor" data-sender>用户</label><label><input id="sender-agent" type="checkbox" value="agent" data-sender>客服</label><label><input id="sender-bot" type="checkbox" value="bot" data-sender>机器人</label><span class="scope-note">系统通知不导出</span></div></div>
         </section>
         <section class="progress-section" aria-label="导出进度">
           <div class="progress-heading"><div class="status-caption"><span class="status-dot" id="task-dot"></span><h2 id="task-label">等待开始</h2></div><span id="progress-fraction">尚无任务</span></div>
@@ -32,7 +32,7 @@
       </section>
       <aside class="guide" aria-label="使用指引">
         <div class="guide-title"><h2>三步完成导出</h2></div>
-        <ol><li><span class="step-number">1</span><div><h3>登录并查询</h3><p>打开后台，在 Edge 中设置日期、渠道或标签，再点击“查询”。</p></div></li><li><span class="step-number">2</span><div><h3>回到这里开始</h3><p>确认当前查询，点击“开始导出”。首次导出时选择保存位置。</p></div></li><li><span class="step-number">3</span><div><h3>查看 Excel</h3><p>会话汇总与消息明细，保存在同一份表格里。可打开 Excel 或所在文件夹。</p></div></li></ol>
+        <ol><li><span class="step-number">1</span><div><h3>登录并查询</h3><p>打开后台，在 Edge 中设置日期、渠道或标签，再点击“查询”。</p></div></li><li><span class="step-number">2</span><div><h3>选择内容并导出</h3><p>勾选要导出的用户、客服或机器人消息，再点击“开始导出”。</p></div></li><li><span class="step-number">3</span><div><h3>查看 Excel</h3><p>会话汇总与消息明细，保存在同一份表格里。可打开 Excel 或所在文件夹。</p></div></li></ol>
         <div class="resume-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2 7m-2-7V5m0 6h6m3-4v6l4 2"/></svg><h3>中断了，也能继续</h3><p>已完成进度保存在本机。下次使用相同筛选，自动重试未完成会话。</p></div>
       </aside>
     </main>

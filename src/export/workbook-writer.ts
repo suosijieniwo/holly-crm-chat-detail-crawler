@@ -1,6 +1,7 @@
 import ExcelJS from "exceljs";
 
 import type { ConversationResult, JobCheckpoint } from "../domain/types.js";
+import { DEFAULT_EXPORT_SENDER_SELECTION, type ExportSenderType } from "../domain/export-senders.js";
 import { finalizeOutput, removeTemporaryOutput, reserveOutputPath } from "./output-files.js";
 import { splitExcelText, toSafeExcelText } from "./text-safety.js";
 
@@ -88,7 +89,7 @@ export class WorkbookWriter {
     private readonly now: () => Date = () => new Date()
   ) {}
 
-  async writeAndFinalize(checkpoint: JobCheckpoint): Promise<string> {
+  async writeAndFinalize(checkpoint: JobCheckpoint, senderSelection: readonly ExportSenderType[] = DEFAULT_EXPORT_SENDER_SELECTION): Promise<string> {
     const finalPath = await reserveOutputPath(this.outputDir, this.now());
     const tempPath = `${finalPath}.tmp.xlsx`;
     try {
@@ -103,8 +104,7 @@ export class WorkbookWriter {
       for (const snapshot of [...checkpoint.conversations].sort((a, b) => a.ordinal - b.ordinal)) {
         const result = checkpoint.results[snapshot.conversationId];
         const summary = result?.snapshot.summary ?? snapshot.summary;
-        const exportableMessages =
-          result?.messages.filter((message) => message.senderType === "visitor" || message.senderType === "agent") ?? [];
+        const exportableMessages = result?.messages.filter(message => senderSelection.includes(message.senderType as ExportSenderType)) ?? [];
         addSafeRow(summarySheet, [
           snapshot.conversationId,
           summary.visitorId,

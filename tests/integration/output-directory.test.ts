@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { loadOutputDirectory, saveOutputDirectory } from "../../src/desktop/output-directory.js";
+import { loadExportSenderSelection, loadOutputDirectory, saveExportSenderSelection, saveOutputDirectory } from "../../src/desktop/output-directory.js";
 
 const roots: string[] = [];
 async function fixture() {
@@ -25,6 +25,28 @@ describe("desktop output directory preferences", () => {
     await saveOutputDirectory(settings, second);
     expect(await loadOutputDirectory(settings)).toBe(second);
     expect(JSON.parse(await readFile(settings, "utf8"))).toEqual({ outputDir: second });
+  });
+
+  it("默认选择用户和客服，并持久保存可更换的导出角色", async () => {
+    const { root, settings } = await fixture();
+    expect(await loadExportSenderSelection(settings)).toEqual(["visitor", "agent"]);
+    await saveOutputDirectory(settings, root);
+    await saveExportSenderSelection(settings, ["bot"]);
+    expect(await loadExportSenderSelection(settings)).toEqual(["bot"]);
+    expect(await loadOutputDirectory(settings)).toBe(root);
+    await saveOutputDirectory(settings, root);
+    expect(await loadExportSenderSelection(settings)).toEqual(["bot"]);
+    await saveExportSenderSelection(settings, ["visitor", "agent", "bot"]);
+    expect(await loadExportSenderSelection(settings)).toEqual(["visitor", "agent", "bot"]);
+  });
+
+  it("损坏或空的角色选择不能成为可保存设置", async () => {
+    const { settings } = await fixture();
+    await expect(saveExportSenderSelection(settings, [])).rejects.toThrow(/至少选择/);
+    await expect(saveExportSenderSelection(settings, ["system"] as never)).rejects.toThrow(/无效/);
+    await mkdir(path.dirname(settings));
+    await writeFile(settings, JSON.stringify({ senderSelection: ["system"] }));
+    expect(await loadExportSenderSelection(settings)).toEqual(["visitor", "agent"]);
   });
 
   it("错误目录不能覆盖已保存的有效选择", async () => {

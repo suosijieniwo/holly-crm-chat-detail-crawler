@@ -155,4 +155,16 @@ describe("WorkbookWriter", () => {
     expect(detail.getCell("H2").type).not.toBe(ExcelJS.ValueType.Formula);
     expect(detail.getCell("H2").numFmt).toBe("@");
   });
+
+  it("选择机器人时只写出已选择的角色，仍排除系统通知", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "chat-export-senders-"));
+    dirs.push(dir);
+    const output = await new WorkbookWriter(dir).writeAndFinalize(checkpoint(), ["bot"]);
+    const workbook = await new ExcelJS.Workbook().xlsx.readFile(output);
+    const summary = workbook.getWorksheet("会话汇总")!;
+    const detail = workbook.getWorksheet("消息明细")!;
+    expect(summary.getCell("L2").value).toBe("1");
+    expect(detail.rowCount).toBe(2);
+    expect(detail.getCell("E2").value).toBe("bot");
+  });
 });

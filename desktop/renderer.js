@@ -14,7 +14,12 @@ function render(state) {
   byId("open-browser").querySelector("span").textContent = connected ? "返回后台" : opening ? "正在打开…" : "打开后台";
   byId("browser-hint").textContent = state.queryReady ? "已识别查询，可以开始导出。" : "在专用 Edge 中登录，设置条件并查询。";
   byId("query-summary").textContent = state.querySummary;
-  byId("start-export").disabled = !connected || !state.queryReady || running || opening;
+  const senderSelection = state.senderSelection || ["visitor", "agent"];
+  for (const input of document.querySelectorAll("[data-sender]")) {
+    input.checked = senderSelection.includes(input.value);
+    input.disabled = running || opening;
+  }
+  byId("start-export").disabled = !connected || !state.queryReady || !senderSelection.length || running || opening;
   byId("stop-export").disabled = state.task !== "running";
   byId("clear-jobs").disabled = running || opening;
   byId("clear-login").disabled = running || opening || connected;
@@ -57,6 +62,23 @@ async function act(name, feedback = "action-feedback") {
 }
 for (const [id, action] of Object.entries({ "open-browser": "openBrowser", "start-export": "startExport", "stop-export": "stopExport", "select-output": "selectOutputDirectory", "change-output": "selectOutputDirectory", "open-folder": "openOutputFolder", "open-file": "openLatestFile" })) byId(id).addEventListener("click", () => { void act(action); });
 for (const [id, action] of Object.entries({ "clear-jobs": "clearJobs", "clear-login": "clearLogin" })) byId(id).addEventListener("click", () => { void act(action, "settings-feedback"); });
+async function saveSenderSelection() {
+  const selection = [...document.querySelectorAll("[data-sender]")].filter(input => input.checked).map(input => input.value);
+  if (!selection.length) {
+    render(lastState);
+    byId("action-feedback").textContent = "至少选择一种聊天内容。";
+    return;
+  }
+  byId("action-feedback").textContent = "";
+  try {
+    const result = await api.setSenderSelection(selection);
+    if (!result.ok) throw new Error(result.error);
+  } catch (error) {
+    render(lastState);
+    byId("action-feedback").textContent = error instanceof Error ? error.message : String(error);
+  }
+}
+for (const input of document.querySelectorAll("[data-sender]")) input.addEventListener("change", () => { void saveSenderSelection(); });
 byId("settings-button").addEventListener("click", () => { byId("settings-feedback").textContent = ""; byId("settings-dialog").showModal(); });
 byId("close-settings").addEventListener("click", () => byId("settings-dialog").close());
 if (api) {
