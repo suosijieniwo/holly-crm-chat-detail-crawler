@@ -7,6 +7,8 @@ import type {
   RawMessage
 } from "../domain/types.js";
 
+export const CONTENT_INCOMPLETE_REASON = "存在无法完整解析的消息内容";
+
 function proofKey(message: RawMessage): string | undefined {
   if (message.messageId) return `id:${message.messageId}`;
   if (message.serverSequence !== undefined) return `sequence:${message.serverSequence}`;
@@ -65,7 +67,7 @@ export function normalizeMessageCollection(
   const reasons: string[] = [];
   if (!collection.reachedHistoryStart) reasons.push("无法证明已到达历史起点");
   if (retained.some((message) => message.contentIntegrity === "incomplete")) {
-    reasons.push("存在无法完整解析的消息内容");
+    reasons.push(CONTENT_INCOMPLETE_REASON);
   }
   const declared = collection.declaredMessageCount;
   if (declared?.comparable && declared.value !== retained.length) {

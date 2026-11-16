@@ -191,6 +191,24 @@ describe("ExportJob", () => {
     expect(final).toEqual(cp);
   });
 
+  it.each(["history", "count"] as const)("内容未解析且 %s 未核对完整时仍触发部分成功保护", async issue => {
+    const cp = checkpoint();
+    const collector: MessageCollector = { async collect() {
+      return {
+        messages: [{ senderType: "visitor", messageType: "file", visibleText: "附件", contentIntegrity: "incomplete", source: "api", position: { pageOrCursor: "single", indexInBatch: 0 } }],
+        reachedHistoryStart: issue !== "history",
+        stopReason: issue === "history" ? "unknown" : "explicit-end",
+        declaredMessageCount: issue === "count" ? { value: 2, comparable: true } : undefined,
+        source: "api"
+      };
+    } };
+    const store: JobStore = { async save() {}, async loadResumable() { return undefined; }, async remove() {} };
+    await expect(new ExportJob(collector, store, new GlobalStartRateLimiter(0, clock), {
+      concurrency: 1, maxConsecutivePartials: 1, clock
+    }).start(cp)).rejects.toThrow("连续部分成功达到保护阈值");
+    expect(cp.completedConversationIds).toEqual(["c1"]);
+  });
+
   it("取消等待所有在途线程并最终保存，不写入取消失败", async () => {
     const cp = checkpoint();
     const controller = new AbortController();

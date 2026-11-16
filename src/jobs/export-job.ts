@@ -11,7 +11,7 @@ import type {
   JobCheckpoint,
   MessageCollector
 } from "../domain/types.js";
-import { normalizeMessageCollection } from "../messages/normalize.js";
+import { CONTENT_INCOMPLETE_REASON, normalizeMessageCollection } from "../messages/normalize.js";
 import type { JobStore } from "./checkpoint-store.js";
 import { GlobalStartRateLimiter, systemClock } from "./rate-limiter.js";
 
@@ -146,7 +146,7 @@ export class ExportJob {
         if (result.status === "failed") {
           consecutiveFailures += 1;
           consecutivePartials = 0;
-        } else if (result.status === "partial") {
+        } else if (result.status === "partial" && result.reason !== CONTENT_INCOMPLETE_REASON) {
           consecutivePartials += 1;
           consecutiveFailures = 0;
         } else {

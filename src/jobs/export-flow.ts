@@ -41,6 +41,15 @@ export async function runExportFlow(
     createdAt: now,
     updatedAt: now
   };
+  const cachedResults = checkpoint.results;
+  checkpoint.filter = collected.filter;
+  checkpoint.conversations = collected.conversations;
+  checkpoint.results = Object.fromEntries(collected.conversations.flatMap(snapshot => {
+    const result = cachedResults[snapshot.conversationId];
+    return result ? [[snapshot.conversationId, { ...result, snapshot }]] : [];
+  }));
+  checkpoint.completedConversationIds = [...new Set(checkpoint.completedConversationIds)]
+    .filter(id => checkpoint.results[id] !== undefined);
   if (checkpoint.senderMappingVersion !== 2) {
     for (const result of Object.values(checkpoint.results)) {
       if (result.status === "success") {
