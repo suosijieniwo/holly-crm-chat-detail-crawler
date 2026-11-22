@@ -5,6 +5,7 @@
   --teal: #146a62;
   --border: #dce6e2;
   --canvas: #f2f6f5;
+  --gutter: 24px;
   --amber: #87591e;
   --red: #a3413d;
   font: 14px/1.5 "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
@@ -18,20 +19,42 @@ body, h1, h2, h3, p, dl, dd { margin: 0; }
 ::selection { background: #c7e8df; color: var(--ink); }
 :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
-.app { max-width: 880px; margin: auto; padding: 32px 32px 36px; }
-.header, .brand, .section-heading, .progress-heading, .status-caption, .dialog-heading {
+.titlebar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fbfa;
+  border-bottom: 1px solid var(--border);
+}
+.titlebar-content {
+  margin-left: env(titlebar-area-x, 0px);
+  width: env(titlebar-area-width, 100%);
+  min-height: env(titlebar-area-height, 44px);
+  padding: 0 12px 0 var(--gutter);
+  app-region: drag;
+  user-select: none;
+}
+.titlebar-content, .brand, .section-heading, .progress-heading, .status-caption, .dialog-heading {
   display: flex;
   align-items: center;
 }
-.header, .section-heading, .progress-heading, .dialog-heading {
+.titlebar-content, .section-heading, .progress-heading, .dialog-heading {
   justify-content: space-between;
   gap: 16px;
 }
-.header { margin-bottom: 18px; }
-.brand { gap: 12px; }
-.brand img { border-radius: 10px; }
-h1 { font-size: 23px; font-weight: 650; }
+.brand { gap: 9px; min-width: 0; }
+.brand img { flex: none; }
+.brand h1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 650; }
+.titlebar #settings-button {
+  app-region: no-drag;
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 3px 9px;
+  color: var(--ink);
+}
+.app { max-width: 880px; margin: auto; padding: 24px var(--gutter) 28px; }
 h2, h3 { font-size: 14px; font-weight: 650; }
+#query-title { font-size: 17px; }
 
 button { font: inherit; cursor: pointer; }
 button:disabled { cursor: not-allowed; }
@@ -68,6 +91,7 @@ button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke
   margin-top: 4px;
 }
 .sender-selection, .export-actions, .file-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.export-actions { justify-content: flex-end; }
 .sender-selection { margin-top: 17px; gap: 8px 18px; }
 #sender-label { color: var(--muted); font-size: 13px; }
 .sender-selection label { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; cursor: pointer; }
@@ -118,9 +142,9 @@ dialog::backdrop { background: #153b354d; }
 #settings-feedback:not(:empty) { margin-top: 8px; white-space: pre-wrap; }
 
 @media (max-width: 600px) {
-  .app { padding: 20px 16px; }
+  :root { --gutter: 16px; }
+  .app { padding: 20px var(--gutter); }
   .workspace > section { padding: 16px; }
-  h1 { font-size: 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

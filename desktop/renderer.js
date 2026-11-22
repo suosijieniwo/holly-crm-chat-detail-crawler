@@ -8,8 +8,12 @@ function render(state) {
   const running = state.task === "running" || state.task === "stopping";
   const opening = state.browser === "opening" || state.browser === "closing";
   const connected = state.browser === "open";
-  byId("open-browser").disabled = opening;
-  byId("open-browser").querySelector("span").textContent = {
+  const browserButton = byId("open-browser");
+  const needsQuery = !state.queryReady && !running;
+  browserButton.disabled = opening;
+  browserButton.classList.toggle("primary", needsQuery);
+  browserButton.classList.toggle("secondary", !needsQuery);
+  browserButton.querySelector("span").textContent = {
     closed: "打开后台", opening: "正在打开…", open: "返回后台", closing: "正在关闭…"
   }[state.browser];
   byId("query-summary").textContent = state.queryReady || running

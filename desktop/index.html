@@ -9,17 +9,19 @@
   <script src="renderer.js" defer></script>
 </head>
 <body>
-  <div class="app">
-    <header class="header">
+  <header class="titlebar">
+    <div class="titlebar-content">
       <div class="brand">
-        <img src="assets/mark.svg" width="36" height="36" alt="">
-        <h1>聊天记录导出</h1>
+        <img src="assets/mark.svg" width="24" height="24" alt="">
+        <h1>客服聊天记录导出工具</h1>
       </div>
       <button class="button quiet" id="settings-button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4M9 16v4"/></svg>
         设置
       </button>
-    </header>
+    </div>
+  </header>
+  <div class="app">
     <main class="workspace">
       <section aria-labelledby="query-title">
         <div class="section-heading">
@@ -27,7 +29,7 @@
             <h2 id="query-title">后台查询</h2>
             <p id="query-summary">在专用 Edge 中登录并查询。</p>
           </div>
-          <button class="button secondary" id="open-browser"><span>打开后台</span></button>
+          <button class="button primary" id="open-browser"><span>打开后台</span></button>
         </div>
         <div class="sender-selection" role="group" aria-labelledby="sender-label">
           <span id="sender-label">导出内容</span>
