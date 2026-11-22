@@ -32,9 +32,9 @@ beforeAll(async () => {
 afterAll(async () => { await browser?.close(); }, 30000);
 
 describe("desktop UI", () => {
-  it("首次提示选择位置；选择后保留两个打开按钮并可更换，导出时锁定更换", async () => {
+  it("首次可选择保存位置；导出后可打开文件和文件夹", async () => {
     const page = await openUI();
-    expect(await page.locator("#output-dir").textContent()).toContain("首次");
+    expect(await page.locator("#output-dir").isVisible()).toBe(false);
     expect(await page.locator("#select-output").isVisible()).toBe(true);
     expect(await page.locator("#open-file").isVisible()).toBe(false);
     expect(await page.locator("#open-folder").isVisible()).toBe(false);
@@ -46,6 +46,8 @@ describe("desktop UI", () => {
     expect(await page.locator("#change-output").isVisible()).toBe(true);
     expect(await page.locator("#open-file").isEnabled()).toBe(true);
     expect(await page.locator("#open-folder").isVisible()).toBe(true);
+    expect(await page.locator("#result-path").textContent()).toBe("D:\\导出文件\\result.xlsx");
+    expect(await page.locator("#output-dir").isVisible()).toBe(false);
     await page.locator("#change-output").click();
     expect(await page.evaluate(() => (window as any).__calls.filter((name: string) => name === "selectOutputDirectory").length)).toBe(2);
     await page.evaluate(() => (window as any).__update({ ...(window as any).__state, outputDir: "D:\\导出文件", task: "running" }));
@@ -55,11 +57,13 @@ describe("desktop UI", () => {
   it("默认空状态不显示虚构数据，必须识别查询后才允许开始", async () => {
     const page = await openUI();
     expect(await page.locator("#start-export").isDisabled()).toBe(true);
-    expect(await page.locator("#count-success").textContent()).toBe("—");
+    expect(await page.locator("[role=progressbar]").isVisible()).toBe(false);
+    expect(await page.locator("#stop-export").isVisible()).toBe(false);
     await page.locator("#open-browser").click();
     expect(await page.evaluate(() => (window as any).__calls)).toContain("openBrowser");
     await page.evaluate(() => (window as any).__update({ ...(window as any).__state, browser: "open", queryReady: true, querySummary: "2026-10-19" }));
     expect(await page.locator("#start-export").isEnabled()).toBe(true);
+    expect(await page.locator("#query-summary").textContent()).toBe("2026-10-19");
     await page.close();
   });
   it("显示用户、客服、机器人选择，默认只勾选用户和客服", async () => {
@@ -92,12 +96,14 @@ describe("desktop UI", () => {
     expect(await page.locator("#stop-export").isEnabled()).toBe(true);
     expect(await page.locator("#count-success").textContent()).toBe("3");
     expect(await page.locator("[role=progressbar]").getAttribute("aria-valuenow")).toBe("40");
+    expect(await page.locator("[role=progressbar]").getAttribute("aria-valuetext")).toBe("4 / 10 条会话");
     await page.locator("#stop-export").click();
     expect(await page.evaluate(() => (window as any).__calls)).toContain("stopExport");
     await page.evaluate(() => (window as any).__update({ ...(window as any).__state, browser: "open", queryReady: true, task: "completed", complete: false, output: "C:\\output\\result.xlsx", message: "Excel 已生成，部分会话未完整" }));
     expect(await page.locator("#start-export").isEnabled()).toBe(true);
     expect(await page.locator("#open-file").isEnabled()).toBe(true);
     expect(await page.locator("#task-label").textContent()).toContain("未完整");
+    expect(await page.locator("#task-message").textContent()).toContain("重试");
     await page.close();
   });
   it("错误以文本显示、设置可关闭，较小窗口没有横向溢出", async () => {
@@ -108,9 +114,17 @@ describe("desktop UI", () => {
     expect(await page.locator("#settings-feedback").textContent()).toContain("请先停止任务");
     await page.keyboard.press("Escape");
     expect(await page.locator("#settings-dialog").isVisible()).toBe(false);
-    await page.setViewportSize({ width: 820, height: 600 });
+    await page.setViewportSize({ width: 680, height: 510 });
+    await page.evaluate(() => {
+      const outputDir = "D:\\" + "较长的保存目录".repeat(20);
+      (window as any).__update({
+        ...(window as any).__state, outputDir, output: outputDir + "\\result.xlsx",
+        task: "error", message: '<img src=x onerror="alert(1)">',
+        progress: { total: 15157, completed: 10120, success: 10000, partial: 100, failed: 20 }
+      });
+    });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-    await page.evaluate(() => (window as any).__update({ ...(window as any).__state, task: "error", message: '<img src=x onerror="alert(1)">' }));
+    expect(await page.locator("#open-folder").isVisible()).toBe(true);
     expect(await page.locator("#task-message img").count()).toBe(0);
     expect(await page.locator("#task-message").textContent()).toContain("<img");
     await page.close();
