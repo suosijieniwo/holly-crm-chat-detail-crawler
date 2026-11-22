@@ -6,7 +6,7 @@
 
 **[v1.0.6 源码](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/tree/v1.0.6) · [Windows 免安装版 v1.0.2](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.2) · [使用说明](docs/user-guide-zh-CN.md) · [MIT License](LICENSE)**
 
-![v1.0.6 中文桌面界面，显示单行顶栏和查询入口](docs/images/desktop.png)
+![v1.0.6 中文桌面界面，显示单行顶栏和查询入口](docs/images/desktop-v1.0.6.png)
 
 ## 功能
 

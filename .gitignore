@@ -29,7 +29,7 @@
 !/docs/acceptance-checklist.md
 !/docs/images/
 /docs/images/*
-!/docs/images/desktop.png
+!/docs/images/desktop-v1.0.6.png
 /tests/fixtures/*
 !/tests/fixtures/live-session-redacted.json
 
