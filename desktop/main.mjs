@@ -41,7 +41,8 @@ async function start() {
   window = new BrowserWindow({
     width: 820, height: 560, minWidth: 680, minHeight: 540,
     titleBarStyle: "hidden",
-    titleBarOverlay: { color: "#f8fbfa", symbolColor: "#203d3e", height: 44 },
+    // Let the renderer's title bar and dialog backdrop show through the window controls.
+    titleBarOverlay: { color: "#00000000", symbolColor: "#203d3e", height: 44 },
     title: "客服聊天记录导出工具", backgroundColor: "#f2f6f5", show: false,
     icon: path.join(directory, "assets", "app.ico"), autoHideMenuBar: true,
     webPreferences: { preload: path.join(directory, "preload.cjs"), contextIsolation: true, nodeIntegration: false, sandbox: true }

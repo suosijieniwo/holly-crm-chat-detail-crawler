@@ -4,7 +4,7 @@
 
 基于 TypeScript、Playwright、Electron 和 ExcelJS 开发。通过专用 Microsoft Edge 人工登录，复用当前账号已有的查询权限。本项目为第三方工具，与合力 CRM 官方无隶属关系。
 
-**[v1.0.6 源码](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/tree/v1.0.6) · [Windows 免安装版 v1.0.2](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.2) · [使用说明](docs/user-guide-zh-CN.md) · [MIT License](LICENSE)**
+**[v1.0.7 源码](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/tree/v1.0.7) · [Windows 免安装版 v1.0.7](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.7) · [使用说明](docs/user-guide-zh-CN.md) · [MIT License](LICENSE)**
 
 ![v1.0.6 中文桌面界面，显示单行顶栏和查询入口](docs/images/desktop-v1.0.6.png)
 
@@ -21,7 +21,7 @@
 
 ## 直接使用 EXE
 
-GitHub Releases 当前提供 v1.0.2 免安装版，下载后双击运行。v1.0.6 界面可从源码构建。 [下载 EXE](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.2) · [源码打包](#打包)
+在 GitHub Releases 的附件列表下载 Windows 免安装 EXE，双击运行。 [下载 v1.0.7](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.7) · [源码打包](#打包)
 
 | 项目 | 要求 |
 | --- | --- |
@@ -151,6 +151,7 @@ examples/              完全虚构的 Excel 格式示例
 
 ## 已验证与限制
 
+- 2026-11-22（v1.0.7）：修复打开设置时右上角窗口按钮区留下亮块的问题。已在 Windows 150% 缩放下核对弹窗打开和关闭时的顶栏颜色，110 项测试及 TypeScript 构建通过。
 - 2026-11-22（v1.0.6）：24 个测试文件、110 项测试及 TypeScript 构建通过。已启动 Windows 免安装版，检查默认、最小和最大化窗口下的顶栏布局，以及设置弹窗的打开和关闭。
 - 2026-11-16（v1.0.4）：24 个测试文件、110 项测试及构建通过。回归测试覆盖旧名单 1751 条扩展到本轮 5157 条、移除过期会话、更新汇总字段，以及内容解析不完整时继续生成带标记的 Excel。2026-11-12 的打包程序另以虚构数据验证了 5157 条会话汇总；尚未完成真实后台全量端到端复验。
 - 2026-10-21（v1.0.2）：24 个测试文件、105 项测试及构建通过；最终单文件 exe 在无全局 Node.js/npm 的 PATH 中，以虚构消息验收角色选择、机器人单独导出、排除系统通知及重启后记住选择。本次未重新采集真实后台数据。
