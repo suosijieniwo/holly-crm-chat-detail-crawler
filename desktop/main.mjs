@@ -65,11 +65,13 @@ async function start() {
     window.setMaximizable(!open);
     window.setFullScreenable(!open);
     window.setClosable(!open);
+    window.setTitleBarOverlay({ symbolColor: open ? "#546d6a" : "#203d3e" });
   };
   handle("setSettingsOpen", open => {
     if (typeof open !== "boolean") throw new Error("设置窗口状态无效。");
     if (open && closing) throw new Error("工具正在关闭，请稍候。");
     setSettingsOpen(open);
+    return window.isMaximized();
   });
   window.on("system-context-menu", event => {
     if (settingsOpen) event.preventDefault();

@@ -20,6 +20,7 @@ body, h1, h2, h3, p, dl, dd { margin: 0; }
 :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
 .titlebar {
+  --native-caption-width: calc(100% - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100%));
   position: sticky;
   top: 0;
   z-index: 1;
@@ -28,12 +29,26 @@ body, h1, h2, h3, p, dl, dd { margin: 0; }
 }
 .titlebar-content {
   margin-left: env(titlebar-area-x, 0px);
-  width: env(titlebar-area-width, 100%);
+  width: min(env(titlebar-area-width, 100%), calc(100% - env(titlebar-area-x, 0px) - var(--settings-caption-width, 0px)));
   min-height: env(titlebar-area-height, 44px);
   padding: 0 12px 0 var(--gutter);
   app-region: drag;
   user-select: none;
 }
+.settings-caption-marks {
+  position: absolute;
+  top: 0;
+  right: var(--native-caption-width);
+  width: max(0px, calc(var(--settings-caption-width, 0px) - var(--native-caption-width)));
+  height: env(titlebar-area-height, 44px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  place-items: center;
+  overflow: hidden;
+  color: #6c8180;
+  pointer-events: none;
+}
+.settings-caption-marks svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.1; }
 .titlebar-content, .brand, .section-heading, .progress-heading, .status-caption, .dialog-heading {
   display: flex;
   align-items: center;

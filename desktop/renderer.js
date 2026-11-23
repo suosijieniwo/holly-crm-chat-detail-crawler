@@ -97,21 +97,36 @@ async function saveSenderSelection() {
 }
 for (const input of document.querySelectorAll("[data-sender]")) input.addEventListener("change", () => { void saveSenderSelection(); });
 const settingsDialog = byId("settings-dialog");
+const titlebar = document.querySelector(".titlebar");
+const captionMarks = byId("settings-caption-marks");
 let settingsActive = false;
 async function setSettingsOpen(open) {
   const result = await api.setSettingsOpen(open);
   if (!result.ok) throw new Error(result.error);
+  return result.value;
+}
+function resetSettingsCaption() {
+  captionMarks.hidden = true;
+  titlebar.style.removeProperty("--settings-caption-width");
 }
 byId("settings-button").addEventListener("click", async () => {
   if (settingsActive) return;
   settingsActive = true;
   byId("action-feedback").textContent = "";
   try {
-    await setSettingsOpen(true);
+    const overlay = navigator.windowControlsOverlay;
+    const captionWidth = overlay?.visible ? window.innerWidth - overlay.getTitlebarAreaRect().right : 0;
+    // Save the normal width before Electron removes the two disabled native buttons.
+    if (captionWidth > 0) titlebar.style.setProperty("--settings-caption-width", `${captionWidth}px`);
+    const maximized = await setSettingsOpen(true);
+    byId("settings-maximize-mark").toggleAttribute("hidden", maximized === true);
+    byId("settings-restore-mark").toggleAttribute("hidden", maximized !== true);
+    captionMarks.hidden = captionWidth <= 0;
     byId("settings-feedback").textContent = "";
     settingsDialog.showModal();
   } catch (error) {
     await setSettingsOpen(false).catch(() => {});
+    resetSettingsCaption();
     settingsActive = false;
     byId("action-feedback").textContent = error instanceof Error ? error.message : String(error);
   }
@@ -120,7 +135,10 @@ byId("close-settings").addEventListener("click", () => settingsDialog.close());
 settingsDialog.addEventListener("close", async () => {
   try { await setSettingsOpen(false); }
   catch (error) { byId("action-feedback").textContent = error instanceof Error ? error.message : String(error); }
-  finally { settingsActive = false; }
+  finally {
+    resetSettingsCaption();
+    settingsActive = false;
+  }
 });
 if (api) {
   api.onState(render);
