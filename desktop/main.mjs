@@ -57,6 +57,27 @@ async function start() {
     try { return { ok: true, value: await action(...args) }; }
     catch (error) { return { ok: false, error: error instanceof Error ? error.message : String(error) }; }
   });
+  let settingsOpen = false;
+  const setSettingsOpen = open => {
+    if (open === settingsOpen) return;
+    settingsOpen = open;
+    window.setMinimizable(!open);
+    window.setMaximizable(!open);
+    window.setFullScreenable(!open);
+    window.setClosable(!open);
+  };
+  handle("setSettingsOpen", open => {
+    if (typeof open !== "boolean") throw new Error("设置窗口状态无效。");
+    if (open && closing) throw new Error("工具正在关闭，请稍候。");
+    setSettingsOpen(open);
+  });
+  window.on("system-context-menu", event => {
+    if (settingsOpen) event.preventDefault();
+  });
+  window.webContents.on("render-process-gone", () => setSettingsOpen(false));
+  window.webContents.on("did-start-navigation", ({ isMainFrame, isSameDocument }) => {
+    if (isMainFrame && !isSameDocument) setSettingsOpen(false);
+  });
   const idle = () => {
     const state = controller.getState();
     if (maintenance || closing || state.task === "running" || state.task === "stopping" || state.browser === "opening" || state.browser === "closing") throw new Error("请先停止任务并等待收尾完成。");
@@ -123,7 +144,7 @@ async function start() {
   window.on("close", event => {
     if (quitAllowed) return;
     event.preventDefault();
-    if (closing || maintenance) return;
+    if (closing || maintenance || settingsOpen) return;
     closing = true;
     void (async () => {
       const state = controller.getState();

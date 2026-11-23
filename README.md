@@ -4,7 +4,7 @@
 
 基于 TypeScript、Playwright、Electron 和 ExcelJS 开发。通过专用 Microsoft Edge 人工登录，复用当前账号已有的查询权限。本项目为第三方工具，与合力 CRM 官方无隶属关系。
 
-**[v1.0.7 源码](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/tree/v1.0.7) · [Windows 免安装版 v1.0.7](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.7) · [使用说明](docs/user-guide-zh-CN.md) · [MIT License](LICENSE)**
+**[v1.0.8 源码](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/tree/v1.0.8) · [Windows 免安装版 v1.0.8](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.8) · [使用说明](docs/user-guide-zh-CN.md) · [MIT License](LICENSE)**
 
 ![v1.0.6 中文桌面界面，显示单行顶栏和查询入口](docs/images/desktop-v1.0.6.png)
 
@@ -21,7 +21,7 @@
 
 ## 直接使用 EXE
 
-在 GitHub Releases 的附件列表下载 Windows 免安装 EXE，双击运行。 [下载 v1.0.7](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.7) · [源码打包](#打包)
+在 GitHub Releases 的附件列表下载 Windows 免安装 EXE，双击运行。 [下载 v1.0.8](https://github.com/suosijieniwo/holly-crm-chat-detail-crawler/releases/tag/v1.0.8) · [源码打包](#打包)
 
 | 项目 | 要求 |
 | --- | --- |
@@ -51,6 +51,8 @@
 - **部分成功 / 失败**：未完整结果保留断点，再次使用相同筛选时重试。仅因内容解析不完整的会话不会触发连续部分成功暂停，仍会在 Excel 中标记为部分成功；采集失败、历史未取全或数量不一致的保护继续保留。
 - **手动停止**：等待在途操作完成保存后显示已停止；停止不等于已生成最终 Excel。
 - **恢复任务**：每次重新读取当前筛选的会话列表，纳入新增会话，并按本轮名单和顺序导出。仅复用仍在本轮名单中的成功结果，重试部分成功或失败的会话，无须先清除任务。复用成功缓存不代表其中的每条消息已重新联网核验。
+
+打开设置时，主窗口的最小化、最大化、还原和关闭操作暂停。点击弹窗内的关闭按钮或按 Esc 可退出设置并恢复窗口操作。
 
 设置中的「清除任务」和「清除登录」分别确认，不删除已导出的 Excel。清除登录前需关闭专用 Edge 并等待其退出。
 
@@ -151,6 +153,7 @@ examples/              完全虚构的 Excel 格式示例
 
 ## 已验证与限制
 
+- 2026-11-23（v1.0.8）：在 Windows 普通窗口和最大化窗口中检查了设置弹窗的窗口锁定。关闭按钮和 Esc 均可退出设置并恢复窗口操作。110 项自动化测试及 TypeScript 构建通过。
 - 2026-11-22（v1.0.7）：修复打开设置时右上角窗口按钮区留下亮块的问题。已在 Windows 150% 缩放下核对弹窗打开和关闭时的顶栏颜色，110 项测试及 TypeScript 构建通过。
 - 2026-11-22（v1.0.6）：24 个测试文件、110 项测试及 TypeScript 构建通过。已启动 Windows 免安装版，检查默认、最小和最大化窗口下的顶栏布局，以及设置弹窗的打开和关闭。
 - 2026-11-16（v1.0.4）：24 个测试文件、110 项测试及构建通过。回归测试覆盖旧名单 1751 条扩展到本轮 5157 条、移除过期会话、更新汇总字段，以及内容解析不完整时继续生成带标记的 Excel。2026-11-12 的打包程序另以虚构数据验证了 5157 条会话汇总；尚未完成真实后台全量端到端复验。

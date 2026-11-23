@@ -3,6 +3,7 @@ const names = ["getState", "openBrowser", "startExport", "stopExport", "selectOu
 contextBridge.exposeInMainWorld("exporter", {
   ...Object.fromEntries(names.map(name => [name, () => ipcRenderer.invoke(`exporter:${name}`)])),
   setSenderSelection(selection) { return ipcRenderer.invoke("exporter:setSenderSelection", selection); },
+  setSettingsOpen(open) { return ipcRenderer.invoke("exporter:setSettingsOpen", open); },
   onState(handler) {
     const listener = (_event, state) => handler(state);
     ipcRenderer.on("exporter:state", listener);

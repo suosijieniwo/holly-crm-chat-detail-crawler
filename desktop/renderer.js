@@ -96,8 +96,32 @@ async function saveSenderSelection() {
   }
 }
 for (const input of document.querySelectorAll("[data-sender]")) input.addEventListener("change", () => { void saveSenderSelection(); });
-byId("settings-button").addEventListener("click", () => { byId("settings-feedback").textContent = ""; byId("settings-dialog").showModal(); });
-byId("close-settings").addEventListener("click", () => byId("settings-dialog").close());
+const settingsDialog = byId("settings-dialog");
+let settingsActive = false;
+async function setSettingsOpen(open) {
+  const result = await api.setSettingsOpen(open);
+  if (!result.ok) throw new Error(result.error);
+}
+byId("settings-button").addEventListener("click", async () => {
+  if (settingsActive) return;
+  settingsActive = true;
+  byId("action-feedback").textContent = "";
+  try {
+    await setSettingsOpen(true);
+    byId("settings-feedback").textContent = "";
+    settingsDialog.showModal();
+  } catch (error) {
+    await setSettingsOpen(false).catch(() => {});
+    settingsActive = false;
+    byId("action-feedback").textContent = error instanceof Error ? error.message : String(error);
+  }
+});
+byId("close-settings").addEventListener("click", () => settingsDialog.close());
+settingsDialog.addEventListener("close", async () => {
+  try { await setSettingsOpen(false); }
+  catch (error) { byId("action-feedback").textContent = error instanceof Error ? error.message : String(error); }
+  finally { settingsActive = false; }
+});
 if (api) {
   api.onState(render);
   api.getState().then(result => { if (result.ok && !lastState) render(result.value); else if (!result.ok) throw new Error(result.error); }).catch(error => { byId("task-message").textContent = `启动失败：${error.message}`; });

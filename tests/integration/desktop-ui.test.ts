@@ -18,7 +18,8 @@ async function openUI(): Promise<Page> {
         target.__calls.push(name);
         return name === "clearJobs" ? { ok: false, error: "请先停止任务" } : { ok: true, value: true };
       }])),
-      setSenderSelection: async (selection: string[]) => { target.__calls.push({ name: "setSenderSelection", selection }); return { ok: true, value: true }; }
+      setSenderSelection: async (selection: string[]) => { target.__calls.push({ name: "setSenderSelection", selection }); return { ok: true, value: true }; },
+      setSettingsOpen: async (open: boolean) => { target.__calls.push({ name: "setSettingsOpen", open }); return { ok: true }; }
     };
     target.__state = state;
   });
@@ -109,11 +110,13 @@ describe("desktop UI", () => {
   it("错误以文本显示、设置可关闭，较小窗口没有横向溢出", async () => {
     const page = await openUI();
     await page.locator("#settings-button").click();
-    expect(await page.locator("#settings-dialog").isVisible()).toBe(true);
+    await page.locator("#settings-dialog").waitFor({ state: "visible" });
+    expect(await page.evaluate(() => (window as any).__calls)).toContainEqual({ name: "setSettingsOpen", open: true });
     await page.locator("#clear-jobs").click();
     expect(await page.locator("#settings-feedback").textContent()).toContain("请先停止任务");
     await page.keyboard.press("Escape");
-    expect(await page.locator("#settings-dialog").isVisible()).toBe(false);
+    await page.locator("#settings-dialog").waitFor({ state: "hidden" });
+    await page.waitForFunction(() => (window as any).__calls.some((call: { name: string; open: boolean }) => call.name === "setSettingsOpen" && call.open === false));
     await page.setViewportSize({ width: 680, height: 510 });
     await page.evaluate(() => {
       const outputDir = "D:\\" + "较长的保存目录".repeat(20);
